@@ -4,14 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean-start && npm run build-src && npm run construct-tool && npm run clean-end",
-    "build-src": "npm run build-api && rollup -c",
-    "build-api": "tsc && tsc --p tsconfig-declarations.json",
-    "clean-start": "npx run-func scripts/cleaner.js cleanStart",
-    "clean-end": "npx run-func scripts/cleaner.js cleanEnd",
-    "construct-tool": "npm run bundle && npm run zip",
-    "bundle": "npx run-func scripts/tool-bundler.js bundle",
-    "zip": "npx run-func scripts/tool-zipper.js zip"
+    "build": "npx run-func .tool/builder.js build"
   },
   "keywords": [],
   "author": "",

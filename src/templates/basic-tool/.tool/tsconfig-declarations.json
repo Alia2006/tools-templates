@@ -6,7 +6,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "sourceMap": false,
-    "outDir": "./temp/tool/types",
+    "outDir": "temp/tool/types",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -17,10 +17,10 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "src/**/*"
+    "../src/**/*"
   ],
   "exclude": [
-    "src/**/*.test.ts",
-    "src/test"
+    "../src/**/*.test.ts",
+    "../src/test"
   ]
 }
