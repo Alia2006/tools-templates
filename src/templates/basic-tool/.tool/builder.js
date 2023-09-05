@@ -2,6 +2,8 @@ const fs = require("fs");
 const { execSync } = require("child_process");
 const archiver = require("archiver");
 
+let distPath = "";
+
 const remove = (files) => {
   try {
     for (const file of files) {
@@ -21,19 +23,24 @@ const cleanStart = () => {
 };
 
 const cleanEnd = () => {
-  setTimeout(() => remove([".tool/temp"]), 2000);
+  setTimeout(() => {
+    remove([".tool/temp"]);
+    // Copy file for local development
+    fs.copyFileSync(distPath, ".tool/local/tool.zip");
+    fs.copyFileSync("index.json", ".tool/local/index.json");
+  }, 2000);
 };
 
 const bundle = () => {
   let source = fs.readFileSync(".tool/temp/tool/index.js", "utf8");
   source = source.replace("import * as THREE from 'three';", "");
   source = source.replace("import * as OBC from 'openbim-components';", "");
-  source = source.replace("export { Main };", "");
+  source = source.replace(/export.*?{.*?};/, "");
 
   // Substitute explicit THREE.js imports by object destructuring
 
   let explicitThreeImports = source.match(
-    /import *{.*} *from *['"`]three['"`];/
+      /import *{.*} *from *['"`]three['"`];/
   );
 
   let threeExplicits = "";
@@ -70,12 +77,14 @@ const zip = () => {
 
   const mediaSource = "resources";
   const mediaDestination = ".tool/temp/tool/resources";
+  const localDestination = ".tool/local/resources";
   remove([mediaDestination]);
   fs.mkdirSync(mediaDestination);
 
   const mediaFiles = fs.readdirSync(mediaSource);
   for (const file of mediaFiles) {
     fs.copyFileSync(`${mediaSource}/${file}`, `${mediaDestination}/${file}`);
+    fs.copyFileSync(`${mediaSource}/${file}`, `${localDestination}/${file}`);
   }
 
   // Transform and copy index.json
@@ -95,12 +104,12 @@ const zip = () => {
 
   const serializedConfig = JSON.stringify(config);
   fs.writeFile(
-    ".tool/temp/tool/index.json",
-    serializedConfig,
-    "utf8",
-    function (err) {
-      if (err) return console.log(err);
-    }
+      ".tool/temp/tool/index.json",
+      serializedConfig,
+      "utf8",
+      function (err) {
+        if (err) return console.log(err);
+      }
   );
 
   // TODO: The types could be a folder, not a single file. Talk with harry / alberto
@@ -116,7 +125,8 @@ const zip = () => {
     fs.mkdirSync("dist");
   }
 
-  const output = fs.createWriteStream(`dist/${config.name}.zip`);
+  distPath = `dist/${config.name}.zip`;
+  const output = fs.createWriteStream(distPath);
   const archive = archiver("zip");
 
   output.on("close", function () {
@@ -152,3 +162,4 @@ const build = () => {
 };
 
 module.exports = { build };
+
