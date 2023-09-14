@@ -55,10 +55,12 @@ function createDirectoryContents(templatePath: string, projectName: string) {
 
         if (stats.isFile()) {
             // read file content and transform it using template engine
-            let contents = fs.readFileSync(origFilePath, 'utf8');
+            // let contents = fs.readFileSync(origFilePath, 'utf8');
             // write file to destination folder
             const writePath = path.join(CURR_DIR, projectName, file);
-            fs.writeFileSync(writePath, contents, 'utf8');
+            // fs.writeFileSync(writePath, contents, 'utf8');
+            // write file to destination folder
+            fs.copyFileSync(origFilePath, writePath);
         } else if (stats.isDirectory()) {
             // create folder in destination folder
             fs.mkdirSync(path.join(CURR_DIR, projectName, file));
