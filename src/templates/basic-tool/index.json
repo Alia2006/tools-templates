@@ -2,7 +2,7 @@
   "name": "Markdown tool",
   "license": "MIT",
   "version": "1.0.0",
-  "icon": "images/icon.jpg",
+  "icon": "resources/icon.jpg",
   "mainThumbnail": "resources/thumbnail.jpg",
   "thumbnails": ["resources/thumbnail.jpg", "resources/1.jpg"],
   "actions": [
