@@ -40,7 +40,7 @@ const bundle = () => {
   // Substitute explicit THREE.js imports by object destructuring
 
   let explicitThreeImports = source.match(
-      /import *{.*} *from *['"`]three['"`];/
+    /import *{.*} *from *['"`]three['"`];/
   );
 
   let threeExplicits = "";
@@ -63,15 +63,31 @@ window.ThatOpenTool = (OBC, THREE) => {
 
     ${source}
 
-    return $$$NAME$$$;
+    return HelloWorld;
 };
 `;
 
   fs.writeFileSync(".tool/temp/tool/index.js", tool, "utf8");
 };
 
-const zip = () => {
-  // Copy all files to dist
+const zip = async () => {
+  // Zip the types
+
+  const typesOutput = fs.createWriteStream(".tool/temp/tool/types.zip");
+  const typesArchive = archiver("zip");
+
+  typesOutput.on("close", function () {
+    console.log("Types successfully packed!");
+  });
+
+  typesArchive.on("error", function (err) {
+    throw err;
+  });
+
+  typesArchive.pipe(typesOutput);
+  typesArchive.directory(".tool/temp/types", false);
+
+  await typesArchive.finalize();
 
   fs.copyFileSync("README.md", ".tool/temp/tool/index.md");
 
@@ -104,19 +120,13 @@ const zip = () => {
 
   const serializedConfig = JSON.stringify(config);
   fs.writeFile(
-      ".tool/temp/tool/index.json",
-      serializedConfig,
-      "utf8",
-      function (err) {
-        if (err) return console.log(err);
-      }
+    ".tool/temp/tool/index.json",
+    serializedConfig,
+    "utf8",
+    function (err) {
+      if (err) return console.log(err);
+    }
   );
-
-  // TODO: The types could be a folder, not a single file. Talk with harry / alberto
-
-  fs.writeFile(".tool/temp/tool/index.d.ts", "", "utf8", function (err) {
-    if (err) return console.log(err);
-  });
 
   // Create zip file
   // src: https://stackoverflow.com/a/18775083/14627620
@@ -144,7 +154,7 @@ const zip = () => {
   archive.finalize();
 };
 
-const build = () => {
+const build = async () => {
   console.log("Cleaning start...");
   cleanStart();
   console.log("Compiling typescript...");
@@ -162,4 +172,5 @@ const build = () => {
 };
 
 module.exports = { build };
+
 
