@@ -6,6 +6,17 @@ import * as inquirer from 'inquirer';
 import chalk from 'chalk';
 import * as fs from 'fs';
 import * as path from 'path';
+const crypto = require('crypto');
+
+// src: https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
+function createUUIDv4() {
+    // @ts-ignore
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+let componentName = "";
 
 const CHOICES = fs.readdirSync(path.join(__dirname, 'templates'));
 const QUESTIONS = [
@@ -43,6 +54,8 @@ const SKIP_FILES = ['node_modules', '.template.json'];
 function createDirectoryContents(templatePath: string, projectName: string) {
     // read all files/folders (1 level) from template folder
     const filesToCreate = fs.readdirSync(templatePath);
+    const uuid = createUUIDv4();
+
     // loop each file/folder
     filesToCreate.forEach(file => {
         const origFilePath = path.join(templatePath, file);
@@ -54,13 +67,19 @@ function createDirectoryContents(templatePath: string, projectName: string) {
         if (SKIP_FILES.indexOf(file) > -1) return;
 
         if (stats.isFile()) {
-            // read file content and transform it using template engine
-            // let contents = fs.readFileSync(origFilePath, 'utf8');
-            // write file to destination folder
-            const writePath = path.join(CURR_DIR, projectName, file);
-            // fs.writeFileSync(writePath, contents, 'utf8');
-            // write file to destination folder
-            fs.copyFileSync(origFilePath, writePath);
+            const isTextFile = origFilePath.match(/(\.json$)|(\.ts$)|(\.js$)/);
+            if(isTextFile) {
+                // Read file and process it
+                let contents = fs.readFileSync(origFilePath, 'utf8');
+                contents = contents.replaceAll(/\$\$\$NAME\$\$\$/g, componentName);
+                contents = contents.replaceAll(/\$\$\$UUID\$\$\$/g, uuid);
+                const writePath = path.join(CURR_DIR, projectName, file);
+                fs.writeFileSync(writePath, contents, 'utf8');
+            } else {
+                // Just copy the file, without processing it
+                const writePath = path.join(CURR_DIR, projectName, file);
+                fs.copyFileSync(origFilePath, writePath);
+            }
         } else if (stats.isDirectory()) {
             // create folder in destination folder
             fs.mkdirSync(path.join(CURR_DIR, projectName, file));
@@ -75,6 +94,7 @@ inquirer.prompt(QUESTIONS)
     .then((answers: any) => {
         const projectChoice = answers['template'] as string;
         const projectName = answers['name'] as string;
+        componentName = projectName;
         const templatePath = path.join(__dirname, 'templates', projectChoice);
         const tartgetPath = path.join(CURR_DIR, projectName);
 

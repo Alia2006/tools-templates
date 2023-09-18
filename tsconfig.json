@@ -8,6 +8,9 @@
     "rootDir": "src",
     "strict": true,
     "esModuleInterop": true,
+    "lib": [
+      "ES2021.String"
+    ]
   },
   "include": [
     "src/index.ts"

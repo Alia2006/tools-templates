@@ -1,7 +1,8 @@
 {
-  "name": "Markdown tool",
+  "name": "$$$NAME$$$",
   "license": "MIT",
   "version": "1.0.0",
+  "uuid": "$$$UUID$$$",
   "icon": "resources/icon.jpg",
   "mainThumbnail": "resources/thumbnail.jpg",
   "thumbnails": ["resources/thumbnail.jpg", "resources/1.jpg"],

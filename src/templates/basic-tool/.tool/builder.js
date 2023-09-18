@@ -63,7 +63,7 @@ window.ThatOpenTool = (OBC, THREE) => {
 
     ${source}
 
-    return Main;
+    return $$$NAME$$$;
 };
 `;
 
