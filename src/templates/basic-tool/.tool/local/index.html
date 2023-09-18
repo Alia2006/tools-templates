@@ -70,7 +70,6 @@
       script.remove();
 
       const tool = new ToolClass(components);
-      components.tools.add("LocalTool", tool);
 
       const rawToolData = await fetch("index.json");
       const toolData = await rawToolData.json();
