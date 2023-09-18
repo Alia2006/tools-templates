@@ -79,7 +79,7 @@
       components.ui.addToolbar(mainToolbar);
 
       for (const { name, icon } of toolData.actions) {
-        const button = tool.uiElement[name];
+				const button = tool.uiElement.get(name);
         if (button) {
           await button.setCustomIcon(icon);
           mainToolbar.addChild(button);
