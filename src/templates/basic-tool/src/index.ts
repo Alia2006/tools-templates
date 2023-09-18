@@ -29,7 +29,7 @@ export class $$$NAME$$$ extends OBC.Component<string> implements OBC.UI {
         const Camera = new OBC.Button(components);
         Camera.onClick.add(() => {
             console.log(this.group);
-            console.log("Measure active!");
+            console.log("Camera active!");
         });
 
         Camera.tooltip = "Camera";
