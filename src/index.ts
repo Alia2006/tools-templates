@@ -16,6 +16,8 @@ function createUUIDv4() {
     );
 }
 
+const uuid = createUUIDv4();
+
 let componentName = "";
 
 const CHOICES = fs.readdirSync(path.join(__dirname, 'templates'));
@@ -54,7 +56,6 @@ const SKIP_FILES = ['node_modules', '.template.json'];
 function createDirectoryContents(templatePath: string, projectName: string) {
     // read all files/folders (1 level) from template folder
     const filesToCreate = fs.readdirSync(templatePath);
-    const uuid = createUUIDv4();
 
     // loop each file/folder
     filesToCreate.forEach(file => {
